@@ -1,36 +1,40 @@
-import universalExecutor, { EntityNotFoundError } from "../universalExecutor";
+import type universalExecutor from "../universalExecutor";
+import { EntityNotFoundError } from "../universalExecutor";
 import npmlog from "npmlog";
-import { Message } from "revolt.js/dist/maps/Messages";
-import { RevoltCommand } from "../interfaces";
+import type { Message } from "revolt.js/dist/maps/Messages";
+import type { RevoltCommand } from "../interfaces";
 
 export class PingCommand implements RevoltCommand {
-  data = {
-    name: "ping",
-    description: "Pings a user in connected Discord channel",
-    usage: "rc!ping <username>",
-  };
+	data = {
+		name: "ping",
+		description: "Pings a user in connected Discord channel",
+		usage: "rc!ping <username>",
+	};
 
-  async execute(
-    message: Message,
-    args: string,
-    executor: universalExecutor
-  ): Promise<void> {
-    if (!args) {
-      await message.reply("Error! You didn't specify a user.");
-      return;
-    }
+	async execute(
+		message: Message,
+		args: string,
+		executor: universalExecutor,
+	): Promise<void> {
+		if (!args) {
+			await message.reply("Error! You didn't specify a user.");
+			return;
+		}
 
-    try {
-      const pinged = await executor.pingDiscordUser(message, args);
-      await message.channel.sendMessage(`Pinged ${pinged}!`);
-    } catch (e) {
-      if (e instanceof EntityNotFoundError) {
-        await message.reply("Error! " + e.message);
-      } else {
-        await message.reply("Something went very wrong. Check the logs.");
-        npmlog.error("Discord", "An error occurred while trying to ping a user");
-        npmlog.error("Discord", e);
-      }
-    }
-  }
+		try {
+			const pinged = await executor.pingDiscordUser(message, args);
+			await message.channel.sendMessage(`Pinged ${pinged}!`);
+		} catch (e) {
+			if (e instanceof EntityNotFoundError) {
+				await message.reply(`Error! ${e.message}`);
+			} else {
+				await message.reply("Something went very wrong. Check the logs.");
+				npmlog.error(
+					"Discord",
+					"An error occurred while trying to ping a user",
+				);
+				npmlog.error("Discord", e);
+			}
+		}
+	}
 }

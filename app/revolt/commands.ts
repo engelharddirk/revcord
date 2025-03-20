@@ -1,4 +1,4 @@
-import { RevoltCommand } from "../interfaces";
+import type { RevoltCommand } from "../interfaces";
 import { AllowBotsCommand } from "./allowBots";
 import { ConnectCommand } from "./connect";
 import { DisconnectCommand } from "./disconnect";
